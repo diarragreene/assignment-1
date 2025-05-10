@@ -1,0 +1,5 @@
+###
+GET http://localhost:3000/books
+
+###
+GET http://localhost:3000/books?filters[0][from]=20&filters[0][to]=40
