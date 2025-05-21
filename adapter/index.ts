@@ -1,3 +1,3 @@
-import assignment from "./assignment-1";
+import assignment from "./assignment-2";
 
 export default assignment;

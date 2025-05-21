@@ -1,5 +1,3 @@
-import books from './../mcmasteful-book-list.json';
-
 export interface Book {
     name: string,
     author: string,
@@ -9,17 +7,27 @@ export interface Book {
 };
 
 async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
-        if (!filters || filters.length === 0) {
-        return books; // No filters, return all books
+   
+    let query = filters?.map(({from, to}, index) => {
+        let result = "";
+        if (from) {
+            result += `&filters[${index}][from]=${from}`;
         }
-        console.log("running listBooks")
-        return books.filter(book =>
-         filters.some(filter =>
-            (filter.from === undefined || book.price >= filter.from) &&
-            (filter.to === undefined || book.price <= filter.to)
-         )
-     );
-    throw new Error("Todo")
+        if (to) {
+            result += `&filters[${index}][to]=${to}`
+        }
+        return result;
+    }).join("&") ?? "";
+
+   
+    let result = await fetch(`http://localhost:3000/books?${query}`);
+
+    if (result.ok) {
+        return (await result.json() as Book[]);
+    } else {
+        console.log("Failed to fetch books: ", await result.text())
+        throw new Error("Failed to fetch books");
+    }
 }
 
 const assignment = "assignment-1";
